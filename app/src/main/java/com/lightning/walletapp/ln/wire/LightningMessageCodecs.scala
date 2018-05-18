@@ -62,7 +62,7 @@ object LightningMessageCodecs { me =>
   def wire2der(sig: BinaryData): BinaryData = {
     val r = new BigInteger(1, sig.take(32).toArray)
     val s = new BigInteger(1, sig.takeRight(32).toArray)
-    Crypto.encodeSignature(r, s) :+ 1.toByte
+    Crypto.encodeSignatureBCA(r, s)
   }
 
   // Codecs

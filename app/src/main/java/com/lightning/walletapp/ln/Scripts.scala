@@ -244,10 +244,7 @@ object Scripts { me =>
       claimHtlcDelayed.input.redeemScript :: Nil) :: Nil)
 
   def sign(tx: Transaction, inputIndex: Int, redeemScript: BinaryData, amount: Satoshi, key: PrivateKey): BinaryData =
-    Transaction.signInput(tx, inputIndex, redeemScript, SIGHASH_ALL, amount, SIGVERSION_WITNESS_V0, key)
-
-  def sign(tx: Transaction, inputIndex: Int, redeemScript: BinaryData, key: PrivateKey): BinaryData =
-    Transaction.signInput(tx, inputIndex, redeemScript, SIGHASH_ALL, Satoshi(0), SIGVERSION_BASE, key)
+    Transaction.signInput(tx, inputIndex, redeemScript, SIGHASH_BCAFORK, amount, SIGVERSION_WITNESS_V0, key)
 
   def sign(txinfo: TransactionWithInputInfo, key: PrivateKey): BinaryData =
     sign(txinfo.tx, 0, txinfo.input.redeemScript, txinfo.input.txOut.amount, key)
@@ -261,7 +258,7 @@ object Scripts { me =>
 
   def checkSig(txinfo: TransactionWithInputInfo, sig: BinaryData, pubKey: PublicKey): Boolean =
     Crypto.verifySignature(Transaction.hashForSigning(txinfo.tx, 0, txinfo.input.redeemScript,
-      SIGHASH_ALL, txinfo.input.txOut.amount, SIGVERSION_WITNESS_V0), sig, pubKey)
+      SIGHASH_BCAFORK, txinfo.input.txOut.amount, SIGVERSION_WITNESS_V0), sig, pubKey)
 
   def makeCommitTx(commitTxInput: InputInfo, commitTxNumber: Long, localPaymentBasePoint: Point, remotePaymentBasePoint: Point,
                    localIsFunder: Boolean, localDustLimit: Satoshi, localRevocationPubkey: PublicKey, toLocalDelay: Int,

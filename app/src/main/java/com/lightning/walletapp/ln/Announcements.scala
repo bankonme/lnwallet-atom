@@ -27,9 +27,9 @@ object Announcements { me =>
       case false => channelAnnouncementWitnessEncode(chainHash, shortChannelId, remoteNodeId, localNodeSecret.publicKey, remoteFundingKey, localFundingPrivKey.publicKey, features)
     }
 
-    val nodeSig = Crypto encodeSignature Crypto.sign(witness, localNodeSecret)
-    val bitcoinSig = Crypto encodeSignature Crypto.sign(witness, localFundingPrivKey)
-    (nodeSig :+ 1.toByte, bitcoinSig :+ 1.toByte)
+    val nodeSig = Crypto encodeSignatureBCA Crypto.sign(witness, localNodeSecret)
+    val bitcoinSig = Crypto encodeSignatureBCA Crypto.sign(witness, localFundingPrivKey)
+    (nodeSig, bitcoinSig)
   }
 
   def makeChannelAnnouncement(chainHash: BinaryData, shortChannelId: Long, localNodeId: PublicKey, remoteNodeId: PublicKey,
@@ -67,11 +67,11 @@ object Announcements { me =>
                         timestamp: Long): ChannelUpdate = {
 
     val flags = makeFlags(isNode1(nodeSecret.publicKey.toBin, remoteNodeId.toBin), isEnabled)
-    val sig = Crypto encodeSignature Crypto.sign(channelUpdateWitnessEncode(chainHash, shortChannelId,
+    val sig = Crypto encodeSignatureBCA Crypto.sign(channelUpdateWitnessEncode(chainHash, shortChannelId,
       timestamp, flags, cltvExpiryDelta, htlcMinimumMsat, feeBaseMsat, feeProportionalMillionths), nodeSecret)
 
-    ChannelUpdate(signature = sig :+ 1.toByte, chainHash, shortChannelId, timestamp,
-      flags, cltvExpiryDelta, htlcMinimumMsat, feeBaseMsat, feeProportionalMillionths)
+    ChannelUpdate(sig, chainHash, shortChannelId, timestamp, flags,
+      cltvExpiryDelta, htlcMinimumMsat, feeBaseMsat, feeProportionalMillionths)
   }
 
   def checkSigs(ann: ChannelAnnouncement): Boolean = {

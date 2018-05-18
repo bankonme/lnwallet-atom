@@ -121,9 +121,9 @@ object PaymentRequest {
   type AmountOption = Option[MilliSatoshi]
 
   val prefixes =
-    Map(Block.RegtestGenesisBlock.hash -> "lnbcrt",
-      Block.TestnetGenesisBlock.hash -> "lntb",
-      Block.LivenetGenesisBlock.hash -> "lnbc")
+    Map(Block.BCARegtestForkBlockHash -> "lnbcart",
+      Block.BCATestnetForkBlockHash -> "lntbca",
+      Block.BCALivenetForkBlockHash -> "lnbca")
 
   def apply(chain: BinaryData, amount: Option[MilliSatoshi], paymentHash: BinaryData,
             privateKey: PrivateKey, description: String, fallbackAddress: Option[String],

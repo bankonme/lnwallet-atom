@@ -32,7 +32,7 @@ class WireSpec {
     val priv = randomBytes(32)
     val data = randomBytes(32)
     val (r, s) = Crypto.sign(data, PrivateKey(priv, true))
-    Crypto.encodeSignature(r, s) :+ fr.acinq.bitcoin.SIGHASH_ALL.toByte
+    Crypto.encodeSignatureBCA(r, s)
   }
 
   def allTests = {
@@ -198,9 +198,9 @@ class WireSpec {
       val update_fail_malformed_htlc = UpdateFailMalformedHtlc(randomBytes(32), 2, randomBytes(32), 1111)
       val commit_sig = CommitSig(randomBytes(32), randomSignature, randomSignature :: randomSignature :: randomSignature :: Nil)
       val revoke_and_ack = RevokeAndAck(randomBytes(32), scalar(0), point(1))
-      val channel_announcement = ChannelAnnouncement(randomSignature, randomSignature, randomSignature, randomSignature, bin(7, 9), Block.RegtestGenesisBlock.hash, 1, randomKey.publicKey, randomKey.publicKey, randomKey.publicKey, randomKey.publicKey)
+      val channel_announcement = ChannelAnnouncement(randomSignature, randomSignature, randomSignature, randomSignature, bin(7, 9), Block.BCARegtestForkBlockHash, 1, randomKey.publicKey, randomKey.publicKey, randomKey.publicKey, randomKey.publicKey)
       val node_announcement = NodeAnnouncement(randomSignature, bin(0, 0),  1, randomKey.publicKey, (100.toByte, 200.toByte, 300.toByte), "node-alias", IPv4(InetAddress.getByAddress(Array[Byte](192.toByte, 168.toByte, 1.toByte, 42.toByte)).asInstanceOf[Inet4Address], 42000) :: Nil)
-      val channel_update = ChannelUpdate(randomSignature, Block.RegtestGenesisBlock.hash, 1, 2, bin(2, 2), 3, 4, 5, 6)
+      val channel_update = ChannelUpdate(randomSignature, Block.BCARegtestForkBlockHash, 1, 2, bin(2, 2), 3, 4, 5, 6)
       val announcement_signatures = AnnouncementSignatures(randomBytes(32), 42, randomSignature, randomSignature)
       val ping = Ping(100, BinaryData("01" * 10))
       val pong = Pong(BinaryData("01" * 10))

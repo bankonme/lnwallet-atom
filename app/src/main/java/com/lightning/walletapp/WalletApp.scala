@@ -96,7 +96,7 @@ class WalletApp extends Application { me =>
     private[this] val nodeLink = "([a-fA-F0-9]{66})@([a-zA-Z0-9:\\.\\-_]+):([0-9]+)".r
 
     def recordValue(rawText: String) = value = rawText match {
-      case raw if raw startsWith "bitcoin" => new BitcoinURI(params, raw)
+      case raw if raw startsWith "atom" => new BitcoinURI(params, raw)
       case lnLink(body) if notMixedCase(body) => PaymentRequest read body.toLowerCase
       case nodeLink(key, host, port) => mkNodeAnnouncement(PublicKey(key), host, port.toInt)
       case _ => Address.fromString(params, rawText)
@@ -278,7 +278,7 @@ class WalletApp extends Application { me =>
       wallet.addCoinsSentEventListener(ChannelManager.chainEventsListener)
       wallet.autosaveToFile(walletFile, 400, MILLISECONDS, null)
       peerGroup addPeerDiscovery new DnsDiscovery(params)
-      peerGroup.setMinRequiredProtocolVersion(70015)
+      peerGroup.setMinRequiredProtocolVersion(70020)
       peerGroup.setDownloadTxDependencies(0)
       peerGroup.setPingIntervalMsec(10000)
       peerGroup.setMaxConnections(5)
