@@ -1,0 +1,100 @@
+<manifest
+    package="com.lightning.walletapp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.NFC"/>
+
+    <supports-screens
+        android:resizeable="true"
+        android:anyDensity="true"
+        android:smallScreens="true"
+        android:largeScreens="true"
+        android:xlargeScreens="true"
+        android:normalScreens="true"/>
+
+    <application
+        android:name="com.lightning.walletapp.WalletApp"
+        android:icon="@drawable/ic_launcher"
+        android:fullBackupContent="false"
+        android:label="Bitcoin Atom"
+        android:allowBackup="false">
+
+        <receiver android:enabled="true" android:process=":remote"
+            android:name="com.lightning.walletapp.lnutils.Notificator">
+
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+            </intent-filter>
+
+        </receiver>
+
+        <activity
+            android:name="com.lightning.walletapp.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/NoBarMain">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+            <intent-filter>
+                <!-- receiving shared text -->
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
+
+            <intent-filter>
+                <!-- receiving link clicks -->
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="lightning"/>
+                <data android:scheme="atom"/>
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:launchMode="singleTask" android:name="com.lightning.walletapp.WalletCreateActivity"
+            android:screenOrientation="portrait" android:theme="@style/NoBar"/>
+
+        <activity android:launchMode="singleTask" android:name="com.lightning.walletapp.WalletRestoreActivity"
+            android:screenOrientation="portrait" android:theme="@style/NoBar"/>
+
+        <activity android:launchMode="singleTask" android:name="com.lightning.walletapp.WalletActivity"
+            android:screenOrientation="portrait" android:theme="@style/CustomBar"
+            android:windowSoftInputMode="adjustNothing"/>
+
+        <activity android:launchMode="singleTask" android:name="com.lightning.walletapp.EmergencyActivity"
+            android:screenOrientation="portrait" android:theme="@style/CustomBar"/>
+
+        <activity android:launchMode="singleTask" android:name="com.lightning.walletapp.RequestActivity"
+            android:screenOrientation="portrait" android:theme="@style/NoBar"/>
+
+        <activity android:launchMode="singleTask" android:name="com.lightning.walletapp.LNOpsActivity"
+            android:screenOrientation="portrait" android:theme="@style/NoBar"/>
+
+        <activity android:launchMode="singleTask" android:name="com.lightning.walletapp.LNStartActivity"
+            android:screenOrientation="portrait" android:theme="@style/CustomBar"/>
+
+        <activity android:launchMode="singleTask" android:name="com.lightning.walletapp.LNStartFundActivity"
+            android:screenOrientation="portrait" android:theme="@style/NoBar"/>
+
+        <activity android:launchMode="singleTask" android:name="com.lightning.walletapp.OlympusActivity"
+            android:screenOrientation="portrait" android:theme="@style/CustomBar"/>
+
+    </application>
+</manifest>
