@@ -16,7 +16,7 @@ object LNParams { me =>
   val theirReserveToFundingRatio = 50
   val localFeatures = "02"
   val globalFeatures = ""
-  val minDepth = 6
+  val minDepth = 4
 
   val maxCltvDelta = 7 * 144L
   final val maxHtlcValueMsat = 200000000000L
