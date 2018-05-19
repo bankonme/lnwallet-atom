@@ -92,12 +92,12 @@ class WalletApp extends Application { me =>
   object TransData {
     var value: Any = _
     private[this] val prefixes = PaymentRequest.prefixes.values mkString "|"
-    private[this] val lnLink = s"(?im).*?([$prefixes]{4,6}[0-9]{1,}\\w+){1}".r.unanchored
+    private[this] val lnLink = s"(?im).*?($prefixes)([0-9]{1,}\\w+){1}".r.unanchored
     private[this] val nodeLink = "([a-fA-F0-9]{66})@([a-zA-Z0-9:\\.\\-_]+):([0-9]+)".r
 
     def recordValue(rawText: String) = value = rawText match {
       case raw if raw startsWith "atom" => new BitcoinURI(params, raw)
-      case lnLink(body) if notMixedCase(body) => PaymentRequest read body.toLowerCase
+      case lnLink(pre, x) if notMixedCase(s"$pre$x") => PaymentRequest read s"$pre$x".toLowerCase
       case nodeLink(key, host, port) => mkNodeAnnouncement(PublicKey(key), host, port.toInt)
       case _ => Address.fromString(params, rawText)
     }

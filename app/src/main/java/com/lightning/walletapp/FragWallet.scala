@@ -107,7 +107,7 @@ class FragWalletWorker(val host: WalletActivity, frag: View) extends SearchBar w
       else app.plurOrZero(syncOps, app.ChannelManager.currentBlocksLeft / broadcaster.blocksPerDay)
 
     UITask(customTitle setText s"""
-      &#3647; <strong>$btcFunds</strong><br>
+      &#8371; <strong>$btcFunds</strong><br>
       &#9735; <strong>$lnFunds</strong><br>
       $subtitleText""".html)
   }
@@ -274,7 +274,7 @@ class FragWalletWorker(val host: WalletActivity, frag: View) extends SearchBar w
 
       val status = if (txDead) dead else if (txDepth >= minDepth) conf1 else await
       holder.transactWhen setText when(System.currentTimeMillis, getDate).html
-      holder.transactSum setText s"&#3647; $humanSum".html
+      holder.transactSum setText s"&#8371; $humanSum".html
       holder.transactCircle setImageResource status
       holder.transactWhat setVisibility View.GONE
     }
@@ -294,7 +294,7 @@ class FragWalletWorker(val host: WalletActivity, frag: View) extends SearchBar w
       lst setAdapter views
 
       viewTxOutside setOnClickListener onButtonTap {
-        val uri = s"https://testnet.smartbit.com.au/tx/" + wrap.tx.getHashAsString
+        val uri = s"https://bitcoinatom.net/tx" + wrap.tx.getHashAsString
         host startActivity new Intent(Intent.ACTION_VIEW, Uri parse uri)
       }
 

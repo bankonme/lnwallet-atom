@@ -9,7 +9,6 @@
 
         <android.support.v7.widget.Toolbar
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             android:background="@android:color/black"
@@ -67,11 +66,12 @@
     </LinearLayout>
 
     <com.github.clans.fab.FloatingActionMenu
-        fab:menu_icon="@drawable/ic_btc_24dp"
-        fab:menu_colorPressed="@color/btc"
-        fab:menu_colorNormal="@color/btc"
-        fab:menu_colorRipple="@color/btc"
+        fab:menu_icon="@drawable/ic_launcher"
+        fab:menu_colorPressed="#00000000"
+        fab:menu_colorNormal="#00000000"
+        fab:menu_colorRipple="#00000000"
         style="@style/FloatingMenu"
+        fab:menu_showShadow="false"
         android:id="@+id/fab">
 
         <com.github.clans.fab.FloatingActionButton

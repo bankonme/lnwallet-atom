@@ -5,7 +5,7 @@
 
     <!-- app wide -->
     <string name="step_fees"><![CDATA[<font color=#999999>Final step: miner fee</font><br><br>%1$s]]></string>
-    <string name="greetings">Atom Wallet\nPlease read a short yet important\n<a href='http://lightning-wallet.com'>wallet manual</a> before proceeding</string>
+    <string name="greetings">Bitcoin Atom Wallet\nwith Lightning support\n\nPlease read a short yet important\n<a href='http://lightning-wallet.com'>wallet manual</a> before proceeding</string>
     <string name="sets_rescan_ok">Application is about to be closed now and blockchain rescanning will be automatically triggered on next launch</string>
     <string name="fee_risky"><![CDATA[<small>%1$s %2$s<br><small><font color=#999999>Confirmation may take hours</font></small></small>]]></string>
     <string name="fee_live"><![CDATA[<small>%1$s %2$s<br><small><font color=#999999>Faster confirmation times</font></small></small>]]></string>
@@ -35,7 +35,7 @@
     <!-- headers with links -->
     <string name="olympus_what"><a href='http://lightning-wallet.com/what-does-olympus-server-do#what-does-olympus-server-do'>What does Olympus server do</a>\n<small>don\'t change these settings unless\nyou know what you are doing</small></string>
     <string name="boost_details"><![CDATA[Would you like to raise a fee for this transaction and thus get it confirmed faster?<br><br>current sum %1$s<br>after raise %2$s<br>]]></string>
-    <string name="read_settings"><![CDATA[<small>Got some questions or feel lost?<br><a href=http://lightning-wallet.com>Read a short app manual</a><br>v0.09&#8211;46</small>]]></string>
+    <string name="read_settings"><![CDATA[<small>Atom Lightning Wallet<br><a href=http://lightning-wallet.com>Read a short app manual</a><br>v0.09&#8211;46</small>]]></string>
 
     <string name="channel_recovery_info">
         Recovery tool retrieves available channel backups and uses them to reimburse locked funds back into your on-chain wallet.\n\nYou
@@ -45,10 +45,9 @@
     </string>
 
     <string name="mnemonic_info">
-        <font color="#E31300">Mnemonic phrase is important</font>\n
-        <a href="http://lightning-wallet.com/setting-up-bitcoin-wallet#mnemonic-code">Read about it</a> and save it!
-        \n\nSaving and properly securing a mnemonic phrase is a single most important action to do once a fresh Atom Wallet is created.
-        \n\nYou will need it in case of various emergencies such as lost phone!
+        <font color="#F00859">Mnemonic phrase is important</font>\n
+        <a href="http://lightning-wallet.com/setting-up-bitcoin-wallet#mnemonic-code">Read about it</a> and save it now!
+        \n\nYou will need it in case if anything goes wrong with your wallet!
     </string>
 
     <string name="tokens_warn"><![CDATA[
@@ -120,11 +119,11 @@
     <!-- notifications -->
     <string name="btc_empty">No funds</string>
     <string name="ln_empty">No open channels</string>
-    <string name="btc_status_operational"><![CDATA[<font color=#65BD65>Wallet is operational</font>]]></string>
+    <string name="btc_status_operational">Wallet is operational</string>
     <string name="btc_status_connecting"><![CDATA[<font color=#FF9900>Connecting to peers&#8230;</font>]]></string>
 
     <array name="info_progress">
-        <item><![CDATA[<font color=#53A63C>Sync is complete</font>]]></item>
+        <item>Sync is complete</item>
         <item><![CDATA[<font color=#FF9900>Sync: %1$d day behind</font>]]></item>
         <item><![CDATA[<font color=#FF9900>Sync: %1$d days behind</font>]]></item>
     </array>
@@ -137,9 +136,9 @@
     <string name="btc_outgoing_title_no_fee"><![CDATA[<font color=#FF9900><strong>Atom transaction</strong></font><br>%1$s<br><br>sent %2$s<br><small>%3$s at current rates</small>]]></string>
     <string name="btc_outgoing_title"><![CDATA[<font color=#FF9900><strong>Atom transaction</strong></font><br>%1$s<br><br>sent %2$s<br>fee %3$s = %4$.2f%%<br><small>%5$s at current rates</small>]]></string>
 
-    <string name="txs_sum_out"><![CDATA[<font color=#E31300>%1$s</font>]]></string>
-    <string name="txs_sum_in"><![CDATA[<font color=#53A63C>%1$s</font>]]></string>
-    <string name="txs_view_outside">View on SmartBit site</string>
+    <string name="txs_sum_out"><![CDATA[<font color=#F00859>%1$s</font>]]></string>
+    <string name="txs_sum_in"><![CDATA[<font color=#1BA2E0>%1$s</font>]]></string>
+    <string name="txs_view_outside">View on Explorer site</string>
     <string name="txs_p2wsh">Payment channel funding</string>
 
     <array name="txs_confs">
@@ -201,7 +200,7 @@
     <string name="notice_sync_body">Please open an Atom Wallet app</string>
     <string name="ln_ops_chan_bilateral_closing"><![CDATA[%1$s<br><font color=#999999><i>cooperative</i></font><br>%2$s<br><br>opened at <font color=#999999>%3$s</font><br>closed at <font color=#999999>%4$s</font><br>total capacity %5$s<br>refunded %6$s<br><br>%7$s]]></string>
     <string name="ln_ops_chan_negotiations"><![CDATA[<font color=#FF9900>%1$s</font><br>%2$s<br><br>opened at <font color=#999999>%3$s</font><br>total capacity %4$s<br>refundable %5$s<br><br>%6$s<br><br>Waiting until in-flight payments are resolved and peer agrees to a cooperative closing]]></string>
-    <string name="ln_ops_chan_opening"><![CDATA[<font color=#FF9900>%1$s</font><br>%2$s<br><br>opened at <font color=#999999>%3$s</font><br>total capacity %4$s<br>%5$s required<br><br><a href=https://testnet.smartbit.com.au/tx/%6$s>View funding status</a><br>%7$s<br><br><font color=#999999>Peer node ID</font><br><small>%8$s</small>]]></string>
+    <string name="ln_ops_chan_opening"><![CDATA[<font color=#FF9900>%1$s</font><br>%2$s<br><br>opened at <font color=#999999>%3$s</font><br>total capacity %4$s<br>%5$s required<br><br><a href=https://bitcoinatom.net/tx/%6$s>View funding status</a><br>%7$s<br><br><font color=#999999>Peer node ID</font><br><small>%8$s</small>]]></string>
     <string name="ln_ops_chan_open"><![CDATA[<font color=#53A63C>%1$s</font><br>%2$s<br><br>opened at <font color=#999999>%3$s</font><br>total capacity %4$s<br>can send %5$s<br>can receive %6$s<br><br>%7$s<br><br><font color=#999999>Peer node ID</font><br><small>%8$s</small>]]></string>
     <string name="ln_ops_chan_unilateral_closing"><![CDATA[%1$s<br>%2$s<br>%3$s<br><br>opened at <font color=#999999>%4$s</font><br>closed at <font color=#999999>%5$s</font><br>total capacity %6$s<br><br>%7$s]]></string>
     <string name="ln_ops_chan_basic"><![CDATA[%1$s<br>%2$s<br><br>opened at <font color=#999999>%3$s</font><br>total capacity %4$s]]></string>
@@ -213,7 +212,7 @@
 
     <string name="ln_ops_chan_amount_status">%1$s - %2$s fee</string>
     <string name="ln_ops_chan_refund_status"><![CDATA[<br><br><font color=#999999>Pending refunds</font><br>]]></string>
-    <string name="ln_ops_chan_commit_status"><![CDATA[<a href=https://testnet.smartbit.com.au/tx/%1$s>View closing status</a><br>%2$s<br>%3$s fee]]></string>
+    <string name="ln_ops_chan_commit_status"><![CDATA[<a href=https://bitcoinatom.net/tx/%1$s>View closing status</a><br>%2$s<br>%3$s fee]]></string>
 
     <string name="ln_ops_unilateral_you"><![CDATA[<font color=#999999><i>by your wallet</i></font>]]></string>
     <string name="ln_ops_unilateral_peer"><![CDATA[<font color=#999999><i>by remote peer</i></font>]]></string>
