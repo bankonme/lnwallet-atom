@@ -96,7 +96,7 @@ class WalletApp extends Application { me =>
     private[this] val nodeLink = "([a-fA-F0-9]{66})@([a-zA-Z0-9:\\.\\-_]+):([0-9]+)".r
 
     def recordValue(rawText: String) = value = rawText match {
-      case raw if raw startsWith "atom" => new BitcoinURI(params, raw)
+      case raw if raw startsWith "bitcoin" => new BitcoinURI(params, raw)
       case lnLink(pre, x) if notMixedCase(s"$pre$x") => PaymentRequest read s"$pre$x".toLowerCase
       case nodeLink(key, host, port) => mkNodeAnnouncement(PublicKey(key), host, port.toInt)
       case _ => Address.fromString(params, rawText)

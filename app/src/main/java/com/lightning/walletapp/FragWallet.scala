@@ -294,7 +294,7 @@ class FragWalletWorker(val host: WalletActivity, frag: View) extends SearchBar w
       lst setAdapter views
 
       viewTxOutside setOnClickListener onButtonTap {
-        val uri = s"https://bitcoinatom.net/tx" + wrap.tx.getHashAsString
+        val uri = s"https://bitcoinatom.net/tx/" + wrap.tx.getHashAsString
         host startActivity new Intent(Intent.ACTION_VIEW, Uri parse uri)
       }
 

@@ -312,7 +312,7 @@ class WalletActivity extends NfcReaderActivity with TimerActivity { me =>
         val sourceFilesSeq = Seq(dbFile, app.walletFile, app.chainFile)
         val Seq(dbBytes, walletBytes, chainBytes) = sourceFilesSeq map Files.toByteArray
         val encoded = walletZygoteCodec encode WalletZygote(1, dbBytes, walletBytes, chainBytes)
-        val zygote = FileOps shell s"Atom Wallet snapshot ${new Date}.txt"
+        val zygote = FileOps shell s"Atom Wallet Snapshot ${new Date}.txt"
         Files.write(encoded.require.toByteArray, zygote)
         zygote
       }
@@ -378,10 +378,7 @@ class FragScan extends Fragment with BarcodeCallback { me =>
 
   def tryParseQR(text: String) = {
     def decodeSuccess(unitRecordResult: Unit) = host checkTransData null
-    def fail(err: Throwable) = {
-      err.printStackTrace()
-      runAnd(app toast err_no_data)(barcodeReader.resume)
-    }
+    def fail(err: Throwable) = runAnd(app toast err_no_data)(barcodeReader.resume)
     <(app.TransData recordValue text, fail)(decodeSuccess)
     lastAttempt = System.currentTimeMillis
     barcodeReader.pause
