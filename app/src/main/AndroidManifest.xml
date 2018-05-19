@@ -18,10 +18,10 @@
         android:normalScreens="true"/>
 
     <application
+        android:label="Atom Wallet"
         android:name="com.lightning.walletapp.WalletApp"
         android:icon="@drawable/ic_launcher"
         android:fullBackupContent="false"
-        android:label="Bitcoin Atom"
         android:allowBackup="false">
 
         <receiver android:enabled="true" android:process=":remote"
