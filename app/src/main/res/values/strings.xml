@@ -16,9 +16,9 @@
     <string name="wallet_restore">Restore Wallet</string>
 
     <array name="denoms">
-        <item><![CDATA[Satoshi <font color=#999999><small>= 0.00000001 btc</small></font>]]></item>
-        <item><![CDATA[Finney <font color=#999999><small>= 0.0001 btc</small></font>]]></item>
-        <item><![CDATA[Atom <font color=#999999><small>= 1 btc</small></font>]]></item>
+        <item><![CDATA[Satoshi <font color=#999999><small>= 0.00000001 bca</small></font>]]></item>
+        <item><![CDATA[Finney <font color=#999999><small>= 0.0001 bca</small></font>]]></item>
+        <item><![CDATA[Atom <font color=#999999><small>= 1 bca</small></font>]]></item>
     </array>
 
     <array name="restore_options">
