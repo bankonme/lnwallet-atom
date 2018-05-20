@@ -19,7 +19,7 @@ object LNParams { me =>
   val minDepth = 4
 
   val maxCltvDelta = 7 * 144L
-  final val maxHtlcValueMsat = 200000000000L
+  final val maxHtlcValueMsat = 100000000000L
   final val minHtlcValue = MilliSatoshi(1000L)
   final val maxChannelCapacity = Satoshi(1000000001L)
 
