@@ -25,7 +25,7 @@ class LNStartActivity extends TimerActivity with SearchBar { me =>
   private var nodes = Vector.empty[StartNodeView]
 
   private val atomWalletKey = PublicKey("0218bc75cba78d378d864a0f41d4ccd67eb1eaa829464d37706702003069c003f8")
-  private val atomWalletNode = HardcodedNodeView(app.mkNodeAnnouncement(atomWalletKey, "10.0.2.2", 9835), "<i>Atom Wallet Node</i>")
+  private val atomWalletNode = HardcodedNodeView(app.mkNodeAnnouncement(atomWalletKey, "10.0.2.2", 9835), "<i>Recommended node</i>")
 
   val adapter = new BaseAdapter {
     def getView(pos: Int, cv: View, parent: ViewGroup) = {

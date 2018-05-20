@@ -16,7 +16,7 @@ import org.bitcoinj.core.ECKey
 
 // Uses special paid tokens to store data on server, is constructed directly from a database
 class Cloud(val identifier: String, var connector: Connector, var auth: Int, val removable: Int,
-            val maxPriceMsat: Long = 5000000L) extends StateMachine[CloudData] { me =>
+            val maxPriceMsat: Long = 50000000L) extends StateMachine[CloudData] { me =>
 
   private var isFree = true
   def isAuthEnabled = auth == 1
