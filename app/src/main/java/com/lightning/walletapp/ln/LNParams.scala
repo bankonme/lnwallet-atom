@@ -19,9 +19,9 @@ object LNParams { me =>
   val minDepth = 4
 
   val maxCltvDelta = 7 * 144L
-  final val maxHtlcValueMsat = 100000000000L
+  final val maxHtlcValueMsat = 500000000000L
   final val minHtlcValue = MilliSatoshi(1000L)
-  final val maxChanCapacity = MilliSatoshi(1000000000000L)
+  final val maxChanCapacity = MilliSatoshi(5000000000000L)
 
   var db: LNOpenHelper = _
   var extendedNodeKey: ExtendedPrivateKey = _
