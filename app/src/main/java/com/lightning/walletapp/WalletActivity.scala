@@ -94,7 +94,7 @@ trait HumanTimeDisplay {
 
 class WalletActivity extends NfcReaderActivity with TimerActivity { me =>
   lazy val walletPager = findViewById(R.id.walletPager).asInstanceOf[ViewPager]
-  lazy val floatingButton = findViewById(R.id.fab).asInstanceOf[FloatingActionMenu]
+  lazy val floatingActionMenu = findViewById(R.id.fam).asInstanceOf[FloatingActionMenu]
 
   lazy val slidingFragmentAdapter =
     new FragmentStatePagerAdapter(getSupportFragmentManager) {
@@ -110,14 +110,16 @@ class WalletActivity extends NfcReaderActivity with TimerActivity { me =>
   override def onBackPressed = {
     val isExpanded = FragWallet.worker.currentCut > FragWallet.worker.minLinesNum
     if (walletPager.getCurrentItem == 1) walletPager.setCurrentItem(0, true)
-    else if (floatingButton.isOpened) floatingButton close true
+    else if (floatingActionMenu.isOpened) floatingActionMenu close true
     else if (isExpanded) FragWallet.worker.toggler.performClick
     else super.onBackPressed
   }
 
   override def onCreateOptionsMenu(menu: Menu) = {
-    // Called after fragLN sets toolbar as actionbar
+    // Called after fragWallet sets toolbar as actionbar
     getMenuInflater.inflate(R.menu.wallet, menu)
+    // Updated here to make sure it's present
+    floatingActionMenu setIconAnimated false
     FragWallet.worker setupSearch menu
     true
   }

@@ -67,12 +67,12 @@
 
     <com.github.clans.fab.FloatingActionMenu
         fab:menu_icon="@drawable/ic_launcher"
-        fab:menu_colorPressed="#00000000"
-        fab:menu_colorNormal="#00000000"
-        fab:menu_colorRipple="#00000000"
+        fab:menu_colorPressed="#11333333"
+        fab:menu_colorNormal="#11333333"
+        fab:menu_colorRipple="#11333333"
         style="@style/FloatingMenu"
         fab:menu_showShadow="false"
-        android:id="@+id/fab">
+        android:id="@+id/fam">
 
         <com.github.clans.fab.FloatingActionButton
             android:src="@drawable/ic_add_white_18dp"
