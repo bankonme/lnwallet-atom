@@ -24,10 +24,8 @@ class LNStartActivity extends TimerActivity with SearchBar { me =>
   lazy val nodeView = getString(ln_ops_start_node_view)
   private var nodes = Vector.empty[StartNodeView]
 
-  private val ohHiMarkKey = PublicKey("03dc39d7f43720c2c0f86778dfd2a77049fa4a44b4f0a8afb62f3921567de41375")
-  private val enduranceKey = PublicKey("03933884aaf1d6b108397e5efe5c86bcf2d8ca8d2f700eda99db9214fc2712b134")
-  private val endurance = HardcodedNodeView(app.mkNodeAnnouncement(enduranceKey, "34.250.234.192", 9735), "<i>ACINQ node</i>")
-  private val ohHiMark = HardcodedNodeView(app.mkNodeAnnouncement(ohHiMarkKey, "192.210.203.16", 9735), "<i>Atom Wallet node</i>")
+  private val atomWalletKey = PublicKey("0218bc75cba78d378d864a0f41d4ccd67eb1eaa829464d37706702003069c003f8")
+  private val atomWalletNode = HardcodedNodeView(app.mkNodeAnnouncement(atomWalletKey, "10.0.2.2", 9835), "<i>Atom Wallet Node</i>")
 
   val adapter = new BaseAdapter {
     def getView(pos: Int, cv: View, parent: ViewGroup) = {
@@ -45,7 +43,7 @@ class LNStartActivity extends TimerActivity with SearchBar { me =>
         case HardcodedNodeView(announce, tip) =>
           val theirNodeKey = humanNode(announce.nodeId.toString, "\u0020")
           val txt = nodeView.format(announce.alias, tip, theirNodeKey)
-          view setBackgroundColor 0xFFEEFFEE
+          view setBackgroundColor 0xFFEEEEFF
           textLine setText txt.html
       }
 
@@ -65,7 +63,7 @@ class LNStartActivity extends TimerActivity with SearchBar { me =>
 
       def process(ask: String, res: AnnounceChansNumVec) = {
         val remoteNodeViewWraps = res map RemoteNodeView.apply
-        val augmentedViews = endurance +: ohHiMark +: remoteNodeViewWraps
+        val augmentedViews = atomWalletNode +: remoteNodeViewWraps
         nodes = if (ask.isEmpty) augmentedViews else remoteNodeViewWraps
         UITask(adapter.notifyDataSetChanged).run
       }

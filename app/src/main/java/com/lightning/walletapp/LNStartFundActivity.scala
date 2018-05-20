@@ -122,7 +122,7 @@ class LNStartFundActivity extends TimerActivity { me =>
 
     def askForFunding(their: Init): TimerTask = UITask {
       // Current feerate may be higher than hard cap so choose the largest one
-      val Seq(minFeeCap, minHardCap) = Seq(LNParams.broadcaster.perKwThreeSat, 200000L) map Satoshi
+      val Seq(minFeeCap, minHardCap) = Seq(LNParams.broadcaster.perKwThreeSat, 2000000L) map Satoshi
       val minCapacity: MilliSatoshi = if (minFeeCap > minHardCap) minFeeCap else minHardCap
 
       val minHuman = denom withSign minCapacity
