@@ -13,9 +13,7 @@ import com.lightning.walletapp.Denomination._
 import com.lightning.walletapp.lnutils.ImplicitConversions._
 import org.bitcoinj.wallet.Wallet.ExceededMaxTransactionSize
 import org.bitcoinj.wallet.Wallet.CouldNotAdjustDownwards
-import android.widget.RadioGroup.OnCheckedChangeListener
 import android.widget.AdapterView.OnItemClickListener
-import info.hoang8f.android.segmented.SegmentedGroup
 import concurrent.ExecutionContext.Implicits.global
 import com.lightning.walletapp.ln.LNParams.minDepth
 import android.view.inputmethod.InputMethodManager
@@ -34,7 +32,6 @@ import android.os.Bundle
 import org.bitcoinj.wallet.{DefaultCoinSelector, SendRequest, Wallet}
 import org.bitcoinj.wallet.SendRequest.{emptyWallet, to}
 import com.lightning.walletapp.ln.Tools.{none, wrap}
-import R.id.{typeCNY, typeEUR, typeJPY, typeUSD}
 import scala.util.{Failure, Success, Try}
 import android.app.{AlertDialog, Dialog}
 import android.content.{Context, Intent}
@@ -68,9 +65,7 @@ object Utils {
 
   // Mappings
   val viewMap = Map(true -> View.VISIBLE, false -> View.GONE)
-  val Seq(strDollar, strEuro, strYen, strYuan) = Seq("dollar", "euro", "yen", "yuan")
-  val fiatMap = Map(typeUSD -> strDollar, typeEUR -> strEuro, typeJPY -> strYen, typeCNY -> strYuan)
-  val revFiatMap = Map(strDollar -> typeUSD, strEuro -> typeEUR, strYen -> typeJPY, strYuan -> typeCNY)
+  val List(strDollar, strEuro, strYen, strYuan) = List("dollar", "euro", "yen", "yuan")
   def humanNode(key: String, sep: String) = key.grouped(24).map(_ grouped 3 mkString "\u0020") mkString sep
   def humanSix(adr: String) = adr grouped 6 mkString "\u0020"
 
@@ -258,7 +253,6 @@ trait TimerActivity extends AppCompatActivity { me =>
 class RateManager(extra: String, val content: View) { me =>
   val satInput = content.findViewById(R.id.inputAmount).asInstanceOf[EditText]
   val hintDenom = Utils clickableTextField content.findViewById(R.id.hintDenom)
-  val fiatType = content.findViewById(R.id.fiatType).asInstanceOf[SegmentedGroup]
   val fiatInput = content.findViewById(R.id.fiatInputAmount).asInstanceOf[EditText]
   def result: TryMSat = Try(denom rawString2MSat satInput.getText.toString.noSpaces)
   def setSum(res: TryMSat) = satInput.setText(res map denom.asString getOrElse null)
@@ -274,21 +268,10 @@ class RateManager(extra: String, val content: View) { me =>
     def onTextChanged(s: CharSequence, start: Int, b: Int, c: Int) = if (satInput.hasFocus) upd
   }
 
-  fiatType setOnCheckedChangeListener new OnCheckedChangeListener {
-    def onCheckedChanged(radioGroupView: RadioGroup, newFiatName: Int) = {
-      // We update both runtime variable and saved value for future launches
-
-      fiatName = fiatMap apply newFiatName
-      app.prefs.edit.putString(AbstractKit.FIAT_TYPE, fiatName).commit
-      if (fiatInput.hasFocus) fiatListener.upd else bitListener.upd
-      fiatInput setHint fiatName
-    }
-  }
-
   satInput addTextChangedListener bitListener
   fiatInput addTextChangedListener fiatListener
   hintDenom setText denom.txt.format(extra).html
-  fiatType check revFiatMap(fiatName)
+  fiatInput setHint strDollar
   satInput.requestFocus
 }
 

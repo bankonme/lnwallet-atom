@@ -10,42 +10,6 @@
         android:id="@+id/fiatInputAmount"
         android:focusableInTouchMode="true"/>
 
-    <info.hoang8f.android.segmented.SegmentedGroup
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/fiatType"
-        android:paddingTop="10dp">
-
-        <RadioButton
-            android:text="$"
-            android:textSize="18sp"
-            android:id="@+id/typeUSD"
-            android:layout_width="55dp"
-            style="@style/RadioButton"/>
-
-        <RadioButton
-            android:text="€"
-            android:textSize="18sp"
-            android:id="@+id/typeEUR"
-            android:layout_width="55dp"
-            style="@style/RadioButton"/>
-
-        <RadioButton
-            android:text="¥"
-            android:textSize="18sp"
-            android:id="@+id/typeJPY"
-            android:layout_width="55dp"
-            style="@style/RadioButton"/>
-
-        <RadioButton
-            android:text="CNY"
-            android:textSize="18sp"
-            android:id="@+id/typeCNY"
-            style="@style/RadioButton"/>
-
-    </info.hoang8f.android.segmented.SegmentedGroup>
-
     <TextView
         android:text="="
         style="@style/StdText"
