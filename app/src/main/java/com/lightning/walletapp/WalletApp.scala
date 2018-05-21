@@ -123,8 +123,8 @@ class WalletApp extends Application { me =>
       if estimateCanSend(chan) - lim >= msat
     } yield chan
 
-    def frozenInFlightHashes = all.diff(notClosingOrRefunding).flatMap(inFlightOutgoingHtlcs).map(_.add.paymentHash)
-    def activeInFlightHashes = notClosingOrRefunding.flatMap(inFlightOutgoingHtlcs).map(_.add.paymentHash)
+    def frozenInFlightHashes = all.diff(notClosingOrRefunding).flatMap(inFlightHtlcs).map(_.add.paymentHash)
+    def activeInFlightHashes = notClosingOrRefunding.flatMap(inFlightHtlcs).map(_.add.paymentHash)
     def initConnect = for (chan <- notClosing) ConnectionManager connectTo chan.data.announce
 
     val socketEventsListener = new ConnectionListener {
@@ -227,8 +227,8 @@ class WalletApp extends Application { me =>
 
       for {
         routes <- cheapestRoutesObs
-        // Runtime optimization: prioritize routes of shorter length AND fewer pending payments in local channels
-        chanMap = notClosingOrRefunding.map(chan => chan.data.announce.nodeId -> inFlightOutgoingHtlcs(chan).size).toMap
+        // Runtime optimization: shorter routes AND local channels with fewer pending payments
+        chanMap = notClosingOrRefunding.map(chan => chan.data.announce.nodeId -> inFlightHtlcs(chan).size).toMap
         best = routes.sortBy(route => route.headOption.flatMap(hop => chanMap get hop.nodeId).getOrElse(0) + route.size)
       } yield useFirstRoute(best, rd)
     }
