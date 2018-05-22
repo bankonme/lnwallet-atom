@@ -13,7 +13,6 @@ import com.lightning.walletapp.helper.ThrottledWork
 import com.lightning.walletapp.ln.Tools.runAnd
 import com.lightning.walletapp.ln.Tools.wrap
 import android.support.v7.widget.Toolbar
-import fr.acinq.bitcoin.Crypto.PublicKey
 import android.os.Bundle
 
 
@@ -23,9 +22,6 @@ class LNStartActivity extends TimerActivity with SearchBar { me =>
   lazy val chansNumber = getResources getStringArray R.array.ln_ops_start_node_channels
   lazy val nodeView = getString(ln_ops_start_node_view)
   private var nodes = Vector.empty[StartNodeView]
-
-  private val atomWalletKey = PublicKey("0218bc75cba78d378d864a0f41d4ccd67eb1eaa829464d37706702003069c003f8")
-  private val atomWalletNode = HardcodedNodeView(app.mkNodeAnnouncement(atomWalletKey, "10.0.2.2", 9835), "<i>Recommended node</i>")
 
   val adapter = new BaseAdapter {
     def getView(pos: Int, cv: View, parent: ViewGroup) = {
@@ -62,9 +58,7 @@ class LNStartActivity extends TimerActivity with SearchBar { me =>
       me.react = addWork
 
       def process(ask: String, res: AnnounceChansNumVec) = {
-        val remoteNodeViewWraps = res map RemoteNodeView.apply
-        val augmentedViews = atomWalletNode +: remoteNodeViewWraps
-        nodes = if (ask.isEmpty) augmentedViews else remoteNodeViewWraps
+        nodes = for (nodeInfo <- res) yield RemoteNodeView(nodeInfo)
         UITask(adapter.notifyDataSetChanged).run
       }
     }
