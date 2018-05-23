@@ -121,16 +121,13 @@ class LNStartFundActivity extends TimerActivity { me =>
     }
 
     def askForFunding(their: Init): TimerTask = UITask {
-      // Current feerate may be higher than hard cap so choose the largest one
-      val Seq(minFeeCap, minHardCap) = Seq(LNParams.broadcaster.perKwThreeSat, 2000000L) map Satoshi
-      val minCapacity: MilliSatoshi = if (minFeeCap > minHardCap) minFeeCap else minHardCap
+      // Current feerate may be higher than hard capacity so choose the currently largest value
+      val minCapacity = MilliSatoshi(math.min(LNParams.broadcaster.perKwThreeSat, 2000000L) * 1000L)
 
       val minHuman = denom withSign minCapacity
-      val maxHuman = denom withSign LNParams.maxChanCapacity
       val canSend = denom withSign app.kit.conf1Balance
-
       val content = getLayoutInflater.inflate(R.layout.frag_input_fiat_converter, null, false)
-      val rateManager = new RateManager(getString(amount_hint_newchan).format(minHuman, maxHuman, canSend), content)
+      val rateManager = new RateManager(getString(amount_hint_newchan).format(minHuman, canSend), content)
       val dummyKey = derivePrivateKey(LNParams.extendedCloudKey, System.currentTimeMillis :: 0L :: Nil).publicKey
 
       def next(msat: MilliSatoshi) = new TxProcessor {
@@ -155,7 +152,6 @@ class LNStartFundActivity extends TimerActivity { me =>
       }
 
       def askAttempt(alert: AlertDialog) = rateManager.result match {
-        case Success(ms) if ms > LNParams.maxChanCapacity => app toast dialog_sum_big
         case Success(ms) if ms < minCapacity => app toast dialog_sum_small
         case Failure(reason) => app toast dialog_sum_empty
         case Success(ms) => rm(alert)(next(ms).start)
