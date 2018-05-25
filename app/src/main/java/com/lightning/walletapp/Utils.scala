@@ -67,7 +67,7 @@ object Utils {
   val viewMap = Map(true -> View.VISIBLE, false -> View.GONE)
   val List(strDollar, strEuro, strYen, strYuan) = List("dollar", "euro", "yen", "yuan")
   def humanNode(key: String, sep: String) = key.grouped(24).map(_ grouped 3 mkString "\u0020") mkString sep
-  def humanSix(adr: String) = adr grouped 6 mkString "\u0020"
+  def humanEight(adr: String) = adr grouped 8 mkString "\u0020"
 
   def clickableTextField(view: View): TextView = {
     val field: TextView = view.asInstanceOf[TextView]
@@ -286,7 +286,7 @@ trait PayData {
 case class AddrData(cn: Coin, address: Address) extends PayData {
   def getRequest = if (isAll) emptyWallet(address) else to(address, cn)
   def link = BitcoinURI.convertToBitcoinURI(address, cn, null, null)
-  def destination = humanSix(address.toString)
+  def destination = humanEight(address.toString)
 }
 
 case class P2WSHData(cn: Coin, pay2wsh: Script) extends PayData {
