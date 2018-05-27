@@ -7,12 +7,12 @@ import com.lightning.walletapp.ln.LNParams._
 import com.lightning.walletapp.ln.Features._
 
 import rx.lang.scala.{Observable => Obs}
+import java.net.{InetSocketAddress, Socket}
 import com.lightning.walletapp.ln.Tools.{Bytes, none}
 import com.lightning.walletapp.ln.crypto.Noise.KeyPair
 import fr.acinq.bitcoin.Crypto.PublicKey
 import java.util.concurrent.Executors
 import fr.acinq.bitcoin.BinaryData
-import java.net.Socket
 
 
 object ConnectionManager {
@@ -34,6 +34,13 @@ object ConnectionManager {
     case None => connections += ann.nodeId -> Worker(ann)
   }
 
+  // TODO: remove this later
+  def temporaryFix(isa: InetSocketAddress) = isa.getHostString match {
+    case "213.133.99.89" => new InetSocketAddress("5.9.83.143", isa.getPort)
+    case "213.133.103.56" => new InetSocketAddress("5.9.138.164", isa.getPort)
+    case _ => isa
+  }
+
   case class Worker(ann: NodeAnnouncement, buffer: Bytes = new Bytes(1024), socket: Socket = new Socket) {
     implicit val context: ExecutionContextExecutor = ExecutionContext fromExecutor Executors.newSingleThreadExecutor
     val handler: TransportHandler = new TransportHandler(KeyPair(nodePublicKey.toBin, nodePrivateKey.toBin), ann.nodeId) {
@@ -49,7 +56,8 @@ object ConnectionManager {
 
     val work = Future {
       // First blocking connect, then send data
-      socket.connect(ann.socketAddresses.head, 7500)
+      val isa = temporaryFix(ann.socketAddresses.head)
+      socket.connect(isa, 7500)
       handler.init
 
       while (true) {
