@@ -4,15 +4,15 @@ import com.softwaremill.quicklens._
 import com.lightning.walletapp.ln.wire._
 import com.lightning.walletapp.ln.Channel._
 import com.lightning.walletapp.ln.PaymentInfo._
-
-import fr.acinq.eclair.UInt64
 import java.util.concurrent.Executors
+import fr.acinq.eclair.UInt64
+
 import com.lightning.walletapp.ln.crypto.{Generators, ShaChain, ShaHashesWithIndex, Sphinx}
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 import com.lightning.walletapp.ln.Helpers.{Closing, Funding}
+import fr.acinq.bitcoin.{BinaryData, Satoshi, Transaction}
 import com.lightning.walletapp.ln.Tools.{none, runAnd}
 import fr.acinq.bitcoin.Crypto.{Point, Scalar}
-import fr.acinq.bitcoin.{Satoshi, Transaction}
 import scala.util.{Failure, Success}
 
 
@@ -251,9 +251,10 @@ abstract class Channel extends StateMachine[ChannelData] { me =>
       // SHUTDOWN in WAIT_FUNDING_DONE and OPEN
 
 
-      case (wait: WaitFundingDoneData, CMDShutdown, WAIT_FUNDING_DONE) =>
-        // We have decided to close our channel before it reached a min depth
-        me startShutdown NormalData(wait.announce, wait.commitments)
+      case (wait: WaitFundingDoneData, CMDShutdown(scriptPubKey), WAIT_FUNDING_DONE) =>
+        // We have decided to cooperatively close our channel before it has reached a min depth
+        val finalKey = scriptPubKey getOrElse wait.commitments.localParams.defaultFinalScriptPubKey
+        startShutdown(NormalData(wait.announce, wait.commitments), finalKey)
 
 
       case (wait: WaitFundingDoneData, remote: Shutdown, WAIT_FUNDING_DONE) =>
@@ -261,19 +262,20 @@ abstract class Channel extends StateMachine[ChannelData] { me =>
 
         val norm = NormalData(wait.announce, wait.commitments)
         val norm1 = norm.modify(_.remoteShutdown) setTo Some(remote)
-        // We have their Shutdown so we add ours and start negotiations
-        me startShutdown norm1
+        // We just got their Shutdown so we add ours and start negotiations
+        startShutdown(norm1, wait.commitments.localParams.defaultFinalScriptPubKey)
         doProcess(CMDProceed)
 
 
-      case (norm @ NormalData(_, commitments, our, their), CMDShutdown, OPEN) =>
-        // We have unsigned outgoing HTLCs or already have tried to close this channel cooperatively
+      case (norm @ NormalData(_, commitments, our, their), CMDShutdown(scriptPubKey), OPEN) =>
+        // We may have unsigned outgoing HTLCs or already have tried to close this channel cooperatively
         val nope = our.isDefined | their.isDefined | Commitments.localHasUnsignedOutgoing(commitments)
-        if (nope) startLocalClose(norm) else me startShutdown norm
+        val finalKey = scriptPubKey getOrElse commitments.localParams.defaultFinalScriptPubKey
+        if (nope) startLocalClose(norm) else startShutdown(norm, finalKey)
 
 
       case (norm @ NormalData(_, commitments, _, None), remote: Shutdown, OPEN) =>
-        // GUARD: Either they initiate a shutdown or respond to the one we have sent
+        // Either they initiate a shutdown or respond to the one we have sent
 
         val d1 = norm.modify(_.remoteShutdown) setTo Some(remote)
         val nope = Commitments.remoteHasUnsignedOutgoing(commitments)
@@ -282,15 +284,18 @@ abstract class Channel extends StateMachine[ChannelData] { me =>
         if (nope) startLocalClose(norm) else me UPDATA d1 doProcess CMDProceed
 
 
-      case (norm @ NormalData(_, _, None, their), CMDProceed, OPEN)
-        // GUARD: got their shutdown with no in-flight HTLCs
+      case (norm @ NormalData(_, commitments, None, their), CMDProceed, OPEN)
+        // GUARD: we have previously received their Shutdown
         if inFlightHtlcs(me).isEmpty && their.isDefined =>
-        me startShutdown norm
+
+        // As a result we issued a CMDProceed and are getting it here now
+        // which means we do not have any HTLCs in-flight so can negotiatiate
+        startShutdown(norm, commitments.localParams.defaultFinalScriptPubKey)
         doProcess(CMDProceed)
 
 
       case (NormalData(announce, commitments, our, their), CMDProceed, OPEN)
-        // GUARD: got both shutdowns without in-flight HTLCs so can negotiate
+        // GUARD: got both shutdowns without HTLCs in-flight so can negotiate
         if inFlightHtlcs(me).isEmpty && our.isDefined && their.isDefined =>
 
         val firstProposed = Closing.makeFirstClosing(commitments, our.get.scriptPubKey, their.get.scriptPubKey)
@@ -470,7 +475,8 @@ abstract class Channel extends StateMachine[ChannelData] { me =>
 
 
       case (some: HasCommitments, CMDShutdown, NEGOTIATIONS | OFFLINE) =>
-        // CMDShutdown in WAIT_FUNDING_DONE and OPEN can be cooperative
+        // Disregard custom scriptPubKey and always refund to local wallet
+        // CMDShutdown in WAIT_FUNDING_DONE and OPEN may be cooperative
         startLocalClose(some)
 
 
@@ -498,11 +504,10 @@ abstract class Channel extends StateMachine[ChannelData] { me =>
     BECOME(me STORE NormalData(wait.announce, c1), OPEN)
   }
 
-  private def startShutdown(norm: NormalData) = {
-    val finalScriptPubKey = norm.commitments.localParams.defaultFinalScriptPubKey
-    val localShutdown = Shutdown(norm.commitments.channelId, finalScriptPubKey)
-    val norm1 = norm.modify(_.localShutdown) setTo Some(localShutdown)
-    BECOME(norm1, OPEN) SEND localShutdown
+  private def startShutdown(norm: NormalData, finalScriptPubKey: BinaryData) = {
+    val localShutdownMessage = Shutdown(norm.commitments.channelId, finalScriptPubKey)
+    val norm1 = norm.modify(_.localShutdown) setTo Some(localShutdownMessage)
+    BECOME(norm1, OPEN) SEND localShutdownMessage
   }
 
   private def startMutualClose(some: HasCommitments, tx: Transaction) = some match {

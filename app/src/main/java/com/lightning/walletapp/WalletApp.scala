@@ -67,6 +67,7 @@ class WalletApp extends Application { me =>
   def isAlive = if (null == kit) false else kit.state match { case STARTING | RUNNING => null != db case _ => false }
   def plurOrZero(opts: Array[String], number: Long) = if (number > 0) plur(opts, number) format number else opts(0)
   def getBufferTry = Try(clipboardManager.getPrimaryClip.getItemAt(0).getText.toString)
+  def toAddress(rawText: String) = Address.fromString(app.params, rawText)
   def notMixedCase(s: String) = s.toLowerCase == s || s.toUpperCase == s
 
   Utils.appReference = me
@@ -99,13 +100,14 @@ class WalletApp extends Application { me =>
       case raw if raw startsWith "bitcoin" => new BitcoinURI(params, raw)
       case lnLink(pre, x) if notMixedCase(s"$pre$x") => PaymentRequest read s"$pre$x".toLowerCase
       case nodeLink(key, host, port) => mkNodeAnnouncement(PublicKey(key), host, port.toInt)
-      case _ => Address.fromString(params, rawText)
+      case _ => toAddress(rawText)
     }
   }
 
   object ChannelManager {
     var chainHeightObtained = false
     var currentBlocksLeft = Int.MaxValue
+    val CMDLocalShutdown = CMDShutdown(None)
     val operationalListeners = Set(broadcaster, bag, GossipCatcher)
     // All stored channels which would receive CMDSpent, CMDBestHeight and nothing else
     var all: Vector[Channel] = for (data <- ChannelWrap.get) yield createChannel(operationalListeners, data)
@@ -137,7 +139,7 @@ class WalletApp extends Application { me =>
       }
 
       override def onOperational(nodeId: PublicKey, their: Init) = fromNode(notClosing, nodeId).foreach(_ process CMDOnline)
-      override def onTerminalError(nodeId: PublicKey) = fromNode(notClosing, nodeId).foreach(_ process CMDShutdown)
+      override def onTerminalError(nodeId: PublicKey) = fromNode(notClosing, nodeId).foreach(_ process CMDLocalShutdown)
       override def onIncompatible(nodeId: PublicKey) = onTerminalError(nodeId)
 
       override def onDisconnect(nodeId: PublicKey) = if (fromNode(notClosing, nodeId).nonEmpty) {
