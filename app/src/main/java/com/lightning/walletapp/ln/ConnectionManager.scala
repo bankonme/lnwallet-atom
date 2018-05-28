@@ -36,8 +36,8 @@ object ConnectionManager {
 
   // TODO: remove this later
   def temporaryFix(isa: InetSocketAddress) = isa.getHostString match {
-    case "213.133.99.89" => new InetSocketAddress("5.9.83.143", isa.getPort)
-    case "213.133.103.56" => new InetSocketAddress("5.9.138.164", isa.getPort)
+    case "213.133.99.89" => new InetSocketAddress("5.9.138.164", isa.getPort)
+    case "213.133.103.56" => new InetSocketAddress("5.9.83.143", isa.getPort)
     case _ => isa
   }
 
