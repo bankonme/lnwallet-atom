@@ -249,7 +249,7 @@
 
     <!-- opening a new channel -->
     <array name="ln_ops_start_node_channels">
-        <item><![CDATA[<strong>No public channels</s`trong>]]></item>
+        <item><![CDATA[<strong>No public channels</strong>]]></item>
         <item><![CDATA[<strong>%1$s</strong> public channel]]></item>
         <item><![CDATA[<strong>%1$s</strong> public channels]]></item>
         <item><![CDATA[<i>Public channels unknown</i>]]></item>
