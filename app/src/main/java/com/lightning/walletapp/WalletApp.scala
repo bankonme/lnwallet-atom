@@ -78,7 +78,6 @@ class WalletApp extends Application { me =>
   }
 
   def setBuffer(text: String, andNotify: Boolean = true) = {
-    // Set clipboard contents to given text and notify user via toast
     clipboardManager setPrimaryClip ClipData.newPlainText("wallet", text)
     if (andNotify) me toast getString(copied_to_clipboard).format(text)
   }
@@ -288,8 +287,8 @@ class WalletApp extends Application { me =>
       peerGroup.addWallet(wallet)
 
       Notificator.removeResyncNotification
-      if (ChannelManager.notClosingOrRefunding.nonEmpty)
-        Notificator.scheduleResyncNotificationOnceAgain
+      val shouldReschedule = ChannelManager.notClosingOrRefunding.exists(hasReceivedPayments)
+      if (shouldReschedule) Notificator.scheduleResyncNotificationOnceAgain
 
       ConnectionManager.listeners += ChannelManager.socketEventsListener
       // Passing bitcoinj listener ensures onChainDownloadStarted is called
