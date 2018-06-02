@@ -14,6 +14,7 @@ import com.lightning.walletapp.lnutils.ImplicitConversions._
 import com.lightning.walletapp.lnutils.ImplicitJsonFormats._
 import com.lightning.walletapp.lnutils.olympus.OlympusWrap
 import com.lightning.walletapp.lnutils.olympus.CloudAct
+import android.content.DialogInterface.BUTTON_NEUTRAL
 import com.lightning.walletapp.helper.AES
 import fr.acinq.bitcoin.Crypto.PublicKey
 import org.bitcoinj.script.ScriptBuilder
@@ -123,10 +124,9 @@ class LNStartFundActivity extends TimerActivity { me =>
     def askForFunding(their: Init): TimerTask = UITask {
       // Current feerate may be higher than hard capacity so choose the currently largest value
       val minCapacity = MilliSatoshi(math.max(LNParams.broadcaster.perKwThreeSat, 20000000L) * 1000L)
-      val onChainBalance: MilliSatoshi = app.kit.conf1Balance
-
+      val canSend = denom withSign app.kit.conf1Balance
       val minHuman = denom withSign minCapacity
-      val canSend = denom withSign onChainBalance
+
       val content = getLayoutInflater.inflate(R.layout.frag_input_fiat_converter, null, false)
       val rateManager = new RateManager(getString(amount_hint_newchan).format(minHuman, canSend), content)
       val dummyKey = derivePrivateKey(LNParams.extendedCloudKey, System.currentTimeMillis :: 0L :: Nil).publicKey
@@ -153,14 +153,16 @@ class LNStartFundActivity extends TimerActivity { me =>
       }
 
       def askAttempt(alert: AlertDialog) = rateManager.result match {
+        case Success(ms) if ms > app.kit.conf1Balance => app toast dialog_sum_big
         case Success(ms) if ms < minCapacity => app toast dialog_sum_small
         case Failure(reason) => app toast dialog_sum_empty
         case Success(ms) => rm(alert)(next(ms).start)
       }
 
-      // When balance is less than or equal max chan capacity we fill it in thus giving a hint that all can be sent into channel
-      mkCheckForm(askAttempt, none, baseBuilder(getString(ln_ops_start_fund_title).html, content), dialog_next, dialog_cancel)
-      if (onChainBalance >= minCapacity) rateManager setSum Try(onChainBalance)
+      def useMax = rateManager setSum Try(app.kit.conf1Balance)
+      val bld = baseBuilder(getString(ln_ops_start_fund_title).html, content).setNeutralButton("max", null)
+      val button = mkCheckForm(askAttempt, none, bld, dialog_next, dialog_cancel) getButton BUTTON_NEUTRAL
+      button setOnClickListener onButtonTap(useMax)
     }
 
     whenBackPressed = UITask {
