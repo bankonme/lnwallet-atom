@@ -25,7 +25,7 @@ import android.os.Bundle
 import fr.acinq.bitcoin.{BinaryData, MilliSatoshi, Script}
 import org.bitcoinj.core.{Coin, TransactionOutput}
 import android.widget.{ImageButton, TextView}
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Success, Try}
 
 
 class LNStartFundActivity extends TimerActivity { me =>
@@ -123,9 +123,10 @@ class LNStartFundActivity extends TimerActivity { me =>
     def askForFunding(their: Init): TimerTask = UITask {
       // Current feerate may be higher than hard capacity so choose the currently largest value
       val minCapacity = MilliSatoshi(math.max(LNParams.broadcaster.perKwThreeSat, 20000000L) * 1000L)
+      val onChainBalance: MilliSatoshi = app.kit.conf1Balance
 
       val minHuman = denom withSign minCapacity
-      val canSend = denom withSign app.kit.conf1Balance
+      val canSend = denom withSign onChainBalance
       val content = getLayoutInflater.inflate(R.layout.frag_input_fiat_converter, null, false)
       val rateManager = new RateManager(getString(amount_hint_newchan).format(minHuman, canSend), content)
       val dummyKey = derivePrivateKey(LNParams.extendedCloudKey, System.currentTimeMillis :: 0L :: Nil).publicKey
@@ -157,8 +158,9 @@ class LNStartFundActivity extends TimerActivity { me =>
         case Success(ms) => rm(alert)(next(ms).start)
       }
 
-      val bld = baseBuilder(getString(ln_ops_start_fund_title).html, content)
-      mkCheckForm(askAttempt, none, bld, dialog_next, dialog_cancel)
+      // When balance is less than or equal max chan capacity we fill it in thus giving a hint that all can be sent into channel
+      mkCheckForm(askAttempt, none, baseBuilder(getString(ln_ops_start_fund_title).html, content), dialog_next, dialog_cancel)
+      if (onChainBalance >= minCapacity) rateManager setSum Try(onChainBalance)
     }
 
     whenBackPressed = UITask {
